@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
+require ('dotenv').config();
 
 //Middleware for Authentication
 exports.auth = async (req, res, next) => {
@@ -10,7 +11,7 @@ exports.auth = async (req, res, next) => {
   }
 
   try {
-    const decoded = jwt.verify(token, "secret");
+    const decoded = jwt.verify(token,"secret");
     const user = await User.findById(decoded.userId);
 
     if (!user) {
@@ -24,3 +25,15 @@ exports.auth = async (req, res, next) => {
     res.status(401).json({ message: "Invalid token" });
   }
 };
+// export const requireSignIn = async (req, res, next) => {
+//   try {
+//     const decode = JWT.verify(
+//       req.headers.authorization,
+//       process.env.JWT_SECRET
+//     );
+//     req.user = decode;
+//     next();
+//   } catch (error) {
+//     console.log(error);
+//   }
+// };

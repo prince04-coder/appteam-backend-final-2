@@ -20,7 +20,16 @@ const UserSchema = new mongoose.Schema({
   verified: {
     type: Boolean,
     default: false
-  }
+  },
+  isVoted: {
+    type: Boolean, default: false
+    },
+
+  created: {
+    type: Date,
+    default: Date.now,
+  },
+  clubs: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Club'}],
 });
 
 //defining model

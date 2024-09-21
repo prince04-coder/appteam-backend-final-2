@@ -35,7 +35,7 @@ exports.registerUser = async (req, res) => {
     });
 
     //save
-    await newUser.save();
+     await newUser.save();
     res
       .status(201)
       .json({ message: "User registered successfully, OTP sent to email" });
