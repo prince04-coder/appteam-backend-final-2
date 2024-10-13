@@ -60,7 +60,10 @@ app.use('/verify-otp', otpRoutes);
 // Import and use the Voting route
 const votingRoutes = require("./routes/votingRoute.js");
 app.use('/voting', votingRoutes);
-
+ 
+// Import and use the Member route
+const memberRoutes = require("./routes/memberRoute.js");
+app.use('/members', memberRoutes);
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err);
