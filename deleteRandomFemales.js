@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const User = require('./models/User'); // Update with correct path to your User model
 
 // Connect to MongoDB
-const mongoURI = 'mongodb+srv://khandelwalprince04:appteam@cluster0.hsu22.mongodb.net/hillfair'; // Replace with your MongoDB connection string
+const mongoURI = 'process.env.MONGO_URI'; // Replace with your MongoDB connection string
 
 mongoose.connect(mongoURI, { useUnifiedTopology: true })
   .then(() => {
