@@ -64,6 +64,15 @@ app.use('/voting', votingRoutes);
 // Import and use the Member route
 const memberRoutes = require("./routes/memberRoute.js");
 app.use('/members', memberRoutes);
+
+// Import and use the submit forms
+const  submitFormAnswersRoutes = require("./routes/submitFormAnswersRoute.js");
+app.use('/submitFormAnswers',submitFormAnswersRoutes);
+
+// Import and use the match route
+const matchRoutes = require("./routes/matchRoute.js");
+app.use('/match', matchRoutes);
+
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err);
