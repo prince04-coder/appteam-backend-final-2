@@ -18,7 +18,7 @@ const mongoURI = 'process.env.MONGO_URI'; // Replace with your MongoDB connectio
 mongoose.connect(mongoURI, { useUnifiedTopology: true }) // Removed useNewUrlParser
   .then(() => {
     console.log('MongoDB connected successfully.');
-    generateFakeUsers(300); // Generate 300 fake users
+    generateFakeUsers(100); // Generate 300 fake users
   })
   .catch((err) => console.error('MongoDB connection error:', err));
 

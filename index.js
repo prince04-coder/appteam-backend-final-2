@@ -73,6 +73,14 @@ app.use('/submitFormAnswers',submitFormAnswersRoutes);
 const matchRoutes = require("./routes/matchRoute.js");
 app.use('/match', matchRoutes);
 
+// highlights
+const highlightRoutes = require('./routes/highlightRoute')
+app.use('/highlight', highlightRoutes );
+
+// Event of Club
+const eventRoutes = require('./routes/eventRoute')
+app.use('/event', eventRoutes ); 
+
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err);
