@@ -11,7 +11,7 @@ exports.submitFormAnswer= async (req, res) => {
     
         if (User) {
             // If User exists, update gender and append new quiz answers
-            User.gender = gender;  // Update gender
+             // Update gender
             User.quizAnswers = [...User.quizAnswers, ...quizAnswers];  // Append new answers to the existing array
           } else {
             // If User doesn't exist, return an error response

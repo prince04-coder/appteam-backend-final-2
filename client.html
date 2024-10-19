@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Socket.IO Chat Test</title>
+    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+</head>
+<body>
+    <h1>Socket.IO Chat Test</h1>
+    <input id="userId1" placeholder="User ID 1" />
+    <input id="userId2" placeholder="User ID 2" />
+    <input id="message" placeholder="Message" />
+    <button id="sendMessage">Send Message</button>
+    <script>
+        const socket = io('http://localhost:3000');
+
+        document.getElementById('sendMessage').onclick = function() {
+            const userId1 = document.getElementById('userId1').value;
+            const userId2 = document.getElementById('userId2').value;
+            const messageContent = document.getElementById('message').value;
+
+            socket.emit('joinRoomAndSendMessage', userId1, userId2, messageContent);
+        };
+
+        socket.on('privateMessage', function(message) {
+            console.log('Received message:', message);
+        });
+    </script>
+</body>
+</html>
