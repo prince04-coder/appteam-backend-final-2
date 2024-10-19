@@ -7,6 +7,7 @@
 const mongoose = require('mongoose');
 const { faker } = require('@faker-js/faker'); // Import faker from @faker-js/faker
 const User = require('./models/User'); // Update with the correct path to your User model
+
 require('dotenv').config();
 // Connect to MongoDB
 const mongoURI = process.env.MONGO_URI; // Replace with your MongoDB connection string
