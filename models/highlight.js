@@ -6,7 +6,7 @@ const imageSchema = new mongoose.Schema({
    },
    title:{
     type: String,
-    required: true
+   
    }
     // Add other fields as needed
   });
