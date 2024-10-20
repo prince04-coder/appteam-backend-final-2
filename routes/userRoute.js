@@ -89,7 +89,7 @@ module.exports = router;
 
 /**
  * @swagger
- * /register:
+ * /user/register:
  *   post:
  *     summary: Register a new user
  *     tags: [Users]
@@ -120,7 +120,7 @@ module.exports = router;
 
 /**
  * @swagger
- * /login:
+ * /user/login:
  *   post:
  *     summary: Login a user by Firebase UID
  *     tags: [Users]
@@ -159,7 +159,7 @@ module.exports = router;
 
 /**
  * @swagger
- * /getByUID/{uid}:
+ * /user/getByUID/{uid}:
  *   get:
  *     summary: Fetch a user by Firebase UID
  *     tags: [Users]
@@ -196,7 +196,7 @@ module.exports = router;
 
 /**
  * @swagger
- * /updateQuizAnswers/{userId}:
+ * /user/updateQuizAnswers/{userId}:
  *   put:
  *     summary: Update a user's quiz answers
  *     tags: [Users]
