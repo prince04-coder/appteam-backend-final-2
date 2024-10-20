@@ -61,5 +61,5 @@ Thanks to the following people for contributing to the project:
 
 - [Sankalp Gupta](https://github.com/sankalp2102) – Project Lead and Backend Developer
 - [Prince Khandelwal](https://github.com/prince04-coder) – Backend Developer
-- [Arju Prajapat]() – Backend Developer
+- [Arjun Prajapat](https://github.com/arjunprajapat923) – Backend Developer
 

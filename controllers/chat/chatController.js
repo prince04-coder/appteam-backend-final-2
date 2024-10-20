@@ -12,6 +12,7 @@
 // // };
 
 
+
 // exports.sendMessage = async (socket, userId1, userId2, messageContent) => {
 //   const roomId = generateRoomId(userId1, userId2);
 //   socket.join(roomId);
