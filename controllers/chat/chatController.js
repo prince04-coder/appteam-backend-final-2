@@ -1,14 +1,28 @@
 const Message = require('../../models/Message');
 
-// Send message and join room
+// // Send message and join room
+// exports.sendMessage = async (socket, userId1, userId2, messageContent) => {
+//   const roomId = generateRoomId(userId1, userId2);
+//   socket.join(roomId);
+
+//   const message = new Message({ roomId, sender: userId1, content: messageContent });
+//   await message.save();
+
+//   socket.to(roomId).emit('privateMessage', message);
+// };
+
+
 exports.sendMessage = async (socket, userId1, userId2, messageContent) => {
   const roomId = generateRoomId(userId1, userId2);
   socket.join(roomId);
 
   const message = new Message({ roomId, sender: userId1, content: messageContent });
-  await message.save();
-
-  socket.to(roomId).emit('privateMessage', message);
+  try {
+      await message.save();
+      socket.to(roomId).emit('privateMessage', message);
+  } catch (error) {
+      console.error('Error saving message:', error);
+  }
 };
 
 //Get previous messages

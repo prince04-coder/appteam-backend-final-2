@@ -254,6 +254,10 @@ app.use('/event', eventRoutes);
 const questionRoutes = require('./routes/questionRoute');
 app.use('/questions', questionRoutes);
 
+//Route fro user information filled during firebase authentication
+const userRoutes = require('./routes/userRoute');
+app.use('/user', userRoutes);
+
 // Chat routes
 const chatRoutes = require('./routes/chatRoutes');
 app.use('/api/chat', chatRoutes);
