@@ -193,7 +193,7 @@ const swaggerOptions = {
     },
     servers: [
       {
-        url: `http://localhost:3000`,
+        url: `https://hillffair-backend-2k24.onrender.com`,
       },
     ],
   },
@@ -285,5 +285,5 @@ app.use((err, req, res, next) => {
 // Start the server (use `server.listen` instead of `app.listen`)
 server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
-  console.log(`Swagger docs available at http://localhost:${PORT}/api-docs`);
+  console.log(`Swagger docs available at https://hillffair-backend-2k24.onrender.com/api-docs`);
 });
