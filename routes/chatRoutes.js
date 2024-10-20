@@ -1,45 +1,40 @@
-// const express = require('express');
-// const router = express.Router();
-// const { sendMessage, getPreviousMessages } = require('../controllers/chat/chatController');
-
-// router.post('/send',
-// //    (req, res) => {
-// //   const { userId1, userId2, messageContent } = req.body;
-// //   req.socket.emit('sendMessage', userId1, userId2, messageContent);
-// //   res.status(200).json({ message: 'Message sent' });
-// // }
-// sendMessage
-// );
-
-
-// router.get('/messages/:userId1/:userId2', getPreviousMessages); // Get previous messages
-
-
-
-// module.exports = router;
-
-
-
-
-
-
-
-
-
-
-
 const express = require('express');
-const router = express.Router();
+const router = express.Router(); // Make sure this line is included
 const { sendMessage, getPreviousMessages } = require('../controllers/chat/chatController');
+
 
 /**
  * @swagger
- * /api/chat/send:
+ * components:
+ *   schemas:
+ *     Message:
+ *       type: object
+ *       properties:
+ *         roomId:
+ *           type: string
+ *           description: The room ID generated from user IDs.
+ *           example: "user1-user2"
+ *         sender:
+ *           type: string
+ *           description: The ID of the user who sent the message.
+ *           example: "user1"
+ *         content:
+ *           type: string
+ *           description: The encrypted message content.
+ *           example: "e1a2f..."
+ *         timestamp:
+ *           type: string
+ *           format: date-time
+ *           description: The timestamp when the message was sent.
+ *           example: "2024-10-20T12:34:56.789Z"
+ */
+
+/**
+ * @swagger
+ * /send:
  *   post:
- *     summary: Send a message and join a chat room
- *     tags: 
- *       - Chat
- *     description: Send a private message between two users and join their chat room.
+ *     summary: Send a private message between two users
+ *     description: Sends a private message between two users by emitting the message to the room.
  *     requestBody:
  *       required: true
  *       content:
@@ -50,12 +45,15 @@ const { sendMessage, getPreviousMessages } = require('../controllers/chat/chatCo
  *               userId1:
  *                 type: string
  *                 description: The ID of the sender.
+ *                 example: "user1"
  *               userId2:
  *                 type: string
  *                 description: The ID of the recipient.
+ *                 example: "user2"
  *               messageContent:
  *                 type: string
- *                 description: The message content.
+ *                 description: The content of the message being sent.
+ *                 example: "Hello, how are you?"
  *     responses:
  *       200:
  *         description: Message sent successfully.
@@ -66,36 +64,36 @@ const { sendMessage, getPreviousMessages } = require('../controllers/chat/chatCo
  *               properties:
  *                 message:
  *                   type: string
- *                   example: Message sent
+ *                   example: "Message sent"
  *       500:
- *         description: Error while sending the message.
+ *         description: Error sending the message.
  */
-router.post('/send', sendMessage); // Send message and join room
+router.post('/send', sendMessage);
 
 /**
  * @swagger
- * /api/chat/messages/{userId1}/{userId2}:
+ * /messages/{userId1}/{userId2}:
  *   get:
  *     summary: Get previous messages between two users
- *     tags:
- *       - Chat
- *     description: Fetch the previous messages exchanged between two users in the last 24 hours.
+ *     description: Fetches private messages exchanged between two users within the last 24 hours.
  *     parameters:
- *       - in: path
- *         name: userId1
+ *       - name: userId1
+ *         in: path
+ *         required: true
+ *         description: The ID of the first user.
  *         schema:
  *           type: string
+ *           example: "user1"
+ *       - name: userId2
+ *         in: path
  *         required: true
- *         description: The ID of the first user (sender or recipient).
- *       - in: path
- *         name: userId2
+ *         description: The ID of the second user.
  *         schema:
  *           type: string
- *         required: true
- *         description: The ID of the second user (sender or recipient).
+ *           example: "user2"
  *     responses:
  *       200:
- *         description: Successfully fetched previous messages.
+ *         description: Messages retrieved successfully.
  *         content:
  *           application/json:
  *             schema:
@@ -105,20 +103,25 @@ router.post('/send', sendMessage); // Send message and join room
  *                 properties:
  *                   roomId:
  *                     type: string
- *                     description: The room ID where the chat took place.
+ *                     description: The room ID for the conversation.
+ *                     example: "user1-user2"
  *                   sender:
  *                     type: string
- *                     description: The ID of the message sender.
+ *                     description: The user who sent the message.
+ *                     example: "user1"
  *                   content:
  *                     type: string
- *                     description: The content of the message.
+ *                     description: The message content (decrypted).
+ *                     example: "Hello, how are you?"
  *                   timestamp:
  *                     type: string
  *                     format: date-time
- *                     description: The time the message was sent.
+ *                     description: The timestamp of when the message was sent.
+ *       404:
+ *         description: No messages found between the users.
  *       500:
- *         description: Error while fetching messages.
+ *         description: Error retrieving messages.
  */
-router.get('/messages/:userId1/:userId2', getPreviousMessages); // Get previous messages
+router.get('/messages/:userId1/:userId2', getPreviousMessages);
 
 module.exports = router;
