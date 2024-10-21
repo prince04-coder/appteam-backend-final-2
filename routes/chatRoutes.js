@@ -9,10 +9,7 @@ router.post('/join-room', (req, res) => {
     const { userId1, userId2 } = req.body;
     req.socket.emit('joinRoom', userId1, userId2);
     res.status(200).json({ message: 'Joined room and fetched previous messages' });
-const router = express.Router(); // Make sure this line is included
-const { sendMessage, getPreviousMessages } = require('../controllers/chat/chatController');
-
-
+});
 
 // POST route to send a message
 router.post('/send', (req, res) => {

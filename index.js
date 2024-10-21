@@ -227,8 +227,8 @@ const io = socketIo(server, {
 app.use(cors());
 
 // Import and use various routes
-const authRoutes = require("./routes/authRoute.js");
-app.use('/auth', authRoutes);
+// const authRoutes = require("./routes/authRoute.js");
+// app.use('/auth', authRoutes);
 
 const otpRoutes = require("./routes/otpRoute.js");
 app.use('/verify-otp', otpRoutes);
