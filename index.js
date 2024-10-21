@@ -175,6 +175,7 @@ const connectDb = require('./db.js');
 const cors = require('cors'); // Import cors
 const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
+const { sendMessage, joinRoomAndFetchMessages } = require('./controllers/chat/chatController');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -263,16 +264,33 @@ const chatRoutes = require('./routes/chatRoutes');
 app.use('/api/chat', chatRoutes);
 
 // Socket.IO integration for chat functionality
+// io.on('connection', (socket) => {
+//   console.log('New client connected');
+
+//   socket.on('joinRoomAndSendMessage', (userId1, userId2, messageContent) => {
+//     const chatController = require('./controllers/chat/chatController');
+//     chatController.sendMessage(socket, userId1, userId2, messageContent);
+//   });
+
+//   socket.on('disconnect', () => {
+//     console.log('Client disconnected');
+//   });
+// });
+
 io.on('connection', (socket) => {
   console.log('New client connected');
 
+  socket.on('joinRoom', (userId1, userId2) => {
+      joinRoomAndFetchMessages(socket, userId1, userId2);
+  });
+
   socket.on('joinRoomAndSendMessage', (userId1, userId2, messageContent) => {
-    const chatController = require('./controllers/chat/chatController');
-    chatController.sendMessage(socket, userId1, userId2, messageContent);
+      sendMessage(socket, userId1, userId2, messageContent);
+      joinRoomAndFetchMessages(socket, userId1, userId2); // Fetch previous messages after sending
   });
 
   socket.on('disconnect', () => {
-    console.log('Client disconnected');
+      console.log('Client disconnected');
   });
 });
 

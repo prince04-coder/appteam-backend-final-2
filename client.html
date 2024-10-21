@@ -1,36 +1,3 @@
-<!-- <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Socket.IO Chat Test</title>
-    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
-</head>
-<body>
-    <h1>Socket.IO Chat Test</h1>
-    <input id="userId1" placeholder="User ID 1" />
-    <input id="userId2" placeholder="User ID 2" />
-    <input id="message" placeholder="Message" />
-    <button id="sendMessage">Send Message</button>
-    <script>
-        const socket = io('http://localhost:3000');
-
-        document.getElementById('sendMessage').onclick = function() {
-            const userId1 = document.getElementById('userId1').value;
-            const userId2 = document.getElementById('userId2').value;
-            const messageContent = document.getElementById('message').value;
-
-            socket.emit('joinRoomAndSendMessage', userId1, userId2, messageContent);
-        };
-
-        socket.on('privateMessage', function(message) {
-            console.log('Received message:', message);
-        });
-    </script>
-</body>
-</html> -->
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -38,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Socket.IO Chat Test</title>
     <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- Add jQuery for easier AJAX requests -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
     <h1>Socket.IO Chat Test</h1>
@@ -46,8 +13,6 @@
     <input id="userId2" placeholder="User ID 2" />
     <input id="message" placeholder="Message" />
     <button id="sendMessage">Send Message</button>
-
-    <button id="getMessages">Get Previous Messages</button> <!-- Button to fetch previous messages -->
 
     <div id="messagesContainer" style="margin-top: 20px;"></div> <!-- Container for displaying messages -->
 
@@ -62,29 +27,33 @@
             socket.emit('joinRoomAndSendMessage', userId1, userId2, messageContent);
         };
 
-        // Fetch previous messages
-        document.getElementById('getMessages').onclick = function() {
+        // Join room and fetch previous messages when both user IDs are entered
+        $('#userId2').on('blur', function() {
             const userId1 = document.getElementById('userId1').value;
             const userId2 = document.getElementById('userId2').value;
 
-            $.get(`http://localhost:3000/api/chat/messages/${userId1}/${userId2}`, function(messages) {
-                const messagesContainer = document.getElementById('messagesContainer');
-                messagesContainer.innerHTML = ''; // Clear previous messages
+            if (userId1 && userId2) {
+                socket.emit('joinRoom', userId1, userId2);
+            }
+        });
 
-                messages.forEach(message => {
-                    const messageDiv = document.createElement('div');
-                    messageDiv.innerHTML = `<p><strong>${message.sender}:</strong> ${message.content} <em>${new Date(message.timestamp).toLocaleString()}</em></p>`;
-                    messagesContainer.appendChild(messageDiv);
-                });
-            }).fail(function() {
-                console.error('Error fetching messages');
+        // Listen for previous messages and display them
+        socket.on('previousMessages', function(messages) {
+            const messagesContainer = document.getElementById('messagesContainer');
+            messagesContainer.innerHTML = ''; // Clear previous messages
+
+            messages.forEach(message => {
+                const messageDiv = document.createElement('div');
+                messageDiv.innerHTML = `<p><strong>${message.sender}:</strong> ${message.content} <em>${new Date(message.timestamp).toLocaleString()}</em></p>`;
+                messagesContainer.appendChild(messageDiv);
             });
-        };
+        });
 
+        // Listen for new messages
         socket.on('privateMessage', function(message) {
             const messagesContainer = document.getElementById('messagesContainer');
             const messageDiv = document.createElement('div');
-            messageDiv.innerHTML = `<p><strong>${message.sender}:</strong> ${message.content}</p>`;
+            messageDiv.innerHTML = `<p><strong>${message.sender}:</strong> ${message.content} <em>${new Date(message.timestamp).toLocaleString()}</em></p>`;
             messagesContainer.appendChild(messageDiv);
         });
     </script>
