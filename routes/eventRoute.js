@@ -1,5 +1,9 @@
 
 
+const express = require('express');
+const router = express.Router();
+
+const eventController = require('../controllers/events/eventController');
 
 /**
  * @swagger
@@ -27,10 +31,6 @@
  *         description: "An event about the latest in technology."
  */
 
-const express = require('express');
-const router = express.Router();
-
-const eventController = require('../controllers/events/eventController');
 
 /**
  * @swagger
