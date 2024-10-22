@@ -64,7 +64,7 @@ exports.sendMessage = async (socket, userId1, userId2, messageContent) => {
     const roomId = generateRoomId(userId1, userId2);
    socket.join(roomId);
 
-    const message = new Message({ roomId, sender: userId1, content: messageContent });
+    const message = new Message({ roomId, sender: userId1,reciever:userId2, content: messageContent });
     console.log(message);
     try {
         await message.save();
@@ -115,5 +115,5 @@ try {
 
 // Generate room id
 function generateRoomId(userId1, userId2) {
-    return [userId1, userId2].sort().join('-');
+    return [userId1, userId2].sort((a, b) => a.localeCompare(b)).join('-');
 }
