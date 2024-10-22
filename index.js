@@ -285,12 +285,19 @@ io.on('connection', (socket) => {
   });
 
   socket.on('joinRoomAndSendMessage', (userId1, userId2, messageContent) => {
+    console.log(messageContent)
       sendMessage(socket, userId1, userId2, messageContent);
-      joinRoomAndFetchMessages(socket, userId1, userId2); // Fetch previous messages after sending
+     // joinRoomAndFetchMessages(socket, userId1, userId2); // Fetch previous messages after sending
   });
 
+  
+
+  // Disconnect and leave room
   socket.on('disconnect', () => {
       console.log('Client disconnected');
+      
+      // const roomId = generateRoomId(userId1, userId2);  // Assuming you have user IDs available
+      // socket.leave(roomId);  // Leave the specific room
   });
 });
 

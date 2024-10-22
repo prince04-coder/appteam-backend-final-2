@@ -17,13 +17,15 @@
     <div id="messagesContainer" style="margin-top: 20px;"></div> <!-- Container for displaying messages -->
 
     <script>
-        const socket = io('https://hillffair-backend-2k24.onrender.com');
+        const socket = io('http://localhost:3000');
+
+        // getmesaage()
 
         document.getElementById('sendMessage').onclick = function() {
             const userId1 = document.getElementById('userId1').value;
             const userId2 = document.getElementById('userId2').value;
             const messageContent = document.getElementById('message').value;
-
+            console.log(userId1, userId2, messageContent);
             socket.emit('joinRoomAndSendMessage', userId1, userId2, messageContent);
         };
 
@@ -41,7 +43,7 @@
         socket.on('previousMessages', function(messages) {
             const messagesContainer = document.getElementById('messagesContainer');
             messagesContainer.innerHTML = ''; // Clear previous messages
-
+            console.log("Previous")
             messages.forEach(message => {
                 const messageDiv = document.createElement('div');
                 messageDiv.innerHTML = `<p><strong>${message.sender}:</strong> ${message.content} <em>${new Date(message.timestamp).toLocaleString()}</em></p>`;
@@ -51,6 +53,7 @@
 
         // Listen for new messages
         socket.on('privateMessage', function(message) {
+            console.log("private", message.content)
             const messagesContainer = document.getElementById('messagesContainer');
             const messageDiv = document.createElement('div');
             messageDiv.innerHTML = `<p><strong>${message.sender}:</strong> ${message.content} <em>${new Date(message.timestamp).toLocaleString()}</em></p>`;

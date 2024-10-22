@@ -62,9 +62,10 @@ const Message = require('../../models/Message');
 // Send message and join room
 exports.sendMessage = async (socket, userId1, userId2, messageContent) => {
     const roomId = generateRoomId(userId1, userId2);
-    socket.join(roomId);
+   socket.join(roomId);
 
     const message = new Message({ roomId, sender: userId1, content: messageContent });
+    console.log(message);
     try {
         await message.save();
         // Emit the message to the room (decrypted when fetched)
@@ -76,20 +77,38 @@ exports.sendMessage = async (socket, userId1, userId2, messageContent) => {
 };
 
 // Handle user joining room and automatically sending last 24-hour messages
-exports.joinRoomAndFetchMessages = async (socket, userId1, userId2) => {
+exports.joinRoomAndFetchMessages = async (req, res) => {
+    const { userId1, userId2 } = req.params;
     const roomId = generateRoomId(userId1, userId2);
-    socket.join(roomId);
+    //socket.join(roomId);
 
     const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
-    try {
-        const messages = await Message.find({
+//     try {
+      
+//   // Send the messages as a JSON response
+//   res.status(200).json(messages);
+//         // Emit previous messages to the user
+//       //  socket.emit('previousMessages', messages);
+//     }
+
+try {
+      const messages = await Message.find({
             roomId: roomId,
             timestamp: { $gte: twentyFourHoursAgo }
         }).sort({ timestamp: 1 });
 
-        // Emit previous messages to the user
-        socket.emit('previousMessages', messages);
-    } catch (error) {
+    // If no messages are found, return a 404 error
+    if (!messages || messages.length === 0) {
+        return res.status(404).json({ error: 'No messages found' });
+    }
+
+    // Send decrypted messages as response
+    res.status(200).json(messages.map(message => ({
+        content: message.content, // Decrypted content
+        timestamp: message.timestamp
+    })));
+}
+     catch (error) {
         console.error('Error fetching messages:', error);
     }
 };
