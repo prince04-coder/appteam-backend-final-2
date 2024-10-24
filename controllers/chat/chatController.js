@@ -81,10 +81,10 @@ exports.fetchMessages = async (req, res) => {
     
     const { userId1, userId2 } = req.params;
     const roomId = generateRoomId(userId1, userId2);
-    console.log(roomId)
-    //socket.join(roomId);
+    
+   // socket.join(roomId);
 
-    const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+   // const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
 //     try {
       
 //   // Send the messages as a JSON response
@@ -96,7 +96,7 @@ exports.fetchMessages = async (req, res) => {
 try {
       const messages = await Message.find({
             roomId: roomId,
-            timestamp: { $gte: twentyFourHoursAgo }
+       //     timestamp: { $gte: twentyFourHoursAgo }
         }).sort({ timestamp: 1 });
 
     // If no messages are found, return a 404 error
@@ -111,6 +111,31 @@ try {
     })));
 }
      catch (error) {
+        console.error('Error fetching messages:', error);
+    }
+};
+
+// Handle user joining room and automatically sending last 24-hour messages
+exports.joinRoomAndFetchMessages = async (socket, userId1, userId2) => {
+    const roomId = generateRoomId(userId1, userId2);
+    
+    socket.join(roomId);
+
+    const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+
+    try {
+        const messages = await Message.find({
+            roomId: roomId,
+            timestamp: { $gte: twentyFourHoursAgo }
+        }).sort({ timestamp: 1 });
+
+        if (!messages || messages.length === 0) {
+            return socket.emit('noMessages', { error: 'No messages found' });
+        }
+
+        // Emit previous messages to the user
+        socket.emit('previousMessages', messages);
+    } catch (error) {
         console.error('Error fetching messages:', error);
     }
 };

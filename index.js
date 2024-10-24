@@ -287,7 +287,7 @@ io.on('connection', (socket) => {
   socket.on('joinRoomAndSendMessage', (userId1, userId2, messageContent) => {
     console.log(messageContent)
       sendMessage(socket, userId1, userId2, messageContent);
-     // joinRoomAndFetchMessages(socket, userId1, userId2); // Fetch previous messages after sending
+    // joinRoomAndFetchMessages(socket, userId1, userId2); // Fetch previous messages after sending
   });
 
   
