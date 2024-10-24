@@ -77,9 +77,11 @@ exports.sendMessage = async (socket, userId1, userId2, messageContent) => {
 };
 
 // Handle user joining room and automatically sending last 24-hour messages
-exports.joinRoomAndFetchMessages = async (req, res) => {
+exports.fetchMessages = async (req, res) => {
+    
     const { userId1, userId2 } = req.params;
     const roomId = generateRoomId(userId1, userId2);
+    console.log(roomId)
     //socket.join(roomId);
 
     const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);

@@ -1,12 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const { sendMessage, joinRoomAndFetchMessages } = require('../controllers/chat/chatController');
+const { sendMessage, fetchMessages } = require('../controllers/chat/chatController');
 
 /**
  * Route for joining a room and fetching previous messages
  */
 router.get('/join-room/:userId1/:userId2', 
-  joinRoomAndFetchMessages
+  fetchMessages
 );
 
 // POST route to send a message
