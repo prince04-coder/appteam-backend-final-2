@@ -21,6 +21,9 @@ const QuestionSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    image:{
+      type: String
+    }
   // Add other fields as needed
 });
 

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -14,7 +14,7 @@
     <input id="message" placeholder="Message" />
     <button id="sendMessage">Send Message</button>
 
-    <div id="messagesContainer" style="margin-top: 20px;"></div> <!-- Container for displaying messages -->
+    <div id="messagesContainer" style="margin-top: 20px;"></div> 
 
     <script>
         const socket = io('https://hillffair-backend-2k24.onrender.com');
@@ -59,6 +59,89 @@
             messageDiv.innerHTML = `<p><strong>${message.sender}:</strong> ${message.content} <em>${new Date(message.timestamp).toLocaleString()}</em></p>`;
             messagesContainer.appendChild(messageDiv);
         });
+    </script>
+</body>
+</html>  -->
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Socket.io Chat Test</title>
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+</head>
+<body>
+    <h1>Chat Room Test</h1>
+
+    <!-- User 1 and User 2 input fields -->
+    <label for="userId1">User ID 1:</label>
+    <input type="text" id="userId1" placeholder="Enter User ID 1"><br><br>
+
+    <label for="userId2">User ID 2:</label>
+    <input type="text" id="userId2" placeholder="Enter User ID 2"><br><br>
+
+    <!-- Button to join room and fetch messages -->
+    <button id="joinRoomBtn">Join Room and Fetch Last 24 Hours Messages</button><br><br>
+
+    <!-- Message input and send button -->
+    <label for="messageContent">Message:</label>
+    <input type="text" id="messageContent" placeholder="Enter your message"><br><br>
+
+    <button id="sendMessageBtn">Send Message</button><br><br>
+
+    <!-- Chat messages section -->
+    <h3>Chat Messages:</h3>
+    <div id="chatMessages"></div>
+
+    <script>
+        const socket = io('https://hillffair-backend-2k24.onrender.com'); // Change to your server's address
+
+        // Join room and fetch messages
+        document.getElementById('joinRoomBtn').addEventListener('click', () => {
+            const userId1 = document.getElementById('userId1').value;
+            const userId2 = document.getElementById('userId2').value;
+
+            // Emit joinRoom event
+            socket.emit('joinRoom', userId1, userId2);
+        });
+
+        // Send message
+        document.getElementById('sendMessageBtn').addEventListener('click', () => {
+            const userId1 = document.getElementById('userId1').value;
+            const userId2 = document.getElementById('userId2').value;
+            const messageContent = document.getElementById('messageContent').value;
+
+            // Emit joinRoomAndSendMessage event
+            socket.emit('joinRoomAndSendMessage', userId1, userId2, messageContent);
+        });
+
+        // Receive previous messages when joining a room
+        socket.on('previousMessages', (messages) => {
+            const chatMessages = document.getElementById('chatMessages');
+            chatMessages.innerHTML = ''; // Clear previous messages
+            messages.forEach((message) => {
+                const messageElement = document.createElement('div');
+                messageElement.textContent = `${message.timestamp}: ${message.content}`;
+                chatMessages.appendChild(messageElement);
+            });
+        });
+
+        // // Handle the case where no messages are found
+        // socket.on('noMessages', (data) => {
+        //     const chatMessages = document.getElementById('chatMessages');
+        //     chatMessages.innerHTML = `<p>${data.error}</p>`;
+        // });
+
+        // Receive real-time messages
+        socket.on('privateMessage', (message) => {
+            const chatMessages = document.getElementById('chatMessages');
+            const messageElement = document.createElement('div');
+            messageElement.textContent = `${message.timestamp}: ${message.content}`;
+            chatMessages.appendChild(messageElement);
+        });
+
     </script>
 </body>
 </html>

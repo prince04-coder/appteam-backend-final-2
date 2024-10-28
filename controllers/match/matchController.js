@@ -2,7 +2,7 @@
 const User = require('../../models/User');
 const BATCH_SIZE = 2000;  // Number of users to process per batch
 const PARALLEL_BATCHES = 5;  // Number of parallel batches to run
-const MAX_MATCHES = 10;   // Maximum number of matches for each user
+const MAX_MATCHES = 8;   // Maximum number of matches for each user
 
 // Function to get user counts by gender
 async function getUserCounts() {
