@@ -111,7 +111,9 @@ const messageSchema = new Schema({
   timestamp: {
     type: Date,
     default: () => moment().tz("Asia/Kolkata").toDate()
-  }
+  },
+  read: { type: Boolean, default: false } // Track read status
+
 });
 
 // Middleware to encrypt message before saving

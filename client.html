@@ -3,11 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Socket.io Chat Test</title>
+    <title>Socket.io Chat Test with Unread Message Indicator</title>
     <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+    <style>
+        .unread-indicator {
+            color: green;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+    </style>
 </head>
 <body>
-    <h1>Chat Room Test</h1>
+    <h1>Chat Room Test with Unread Messages</h1>
 
     <!-- User 1 and User 2 input fields -->
     <label for="userId1">User ID 1:</label>
@@ -17,7 +24,9 @@
     <input type="text" id="userId2" placeholder="Enter User ID 2"><br><br>
 
     <!-- Button to join room and fetch messages -->
-    <button id="joinRoomBtn">Join Room and Fetch Last 24 Hours Messages</button><br><br>
+    <button id="joinRoomBtn">Join Room and Fetch Last 24 Hours Messages</button>
+    <span id="unreadIndicator" class="unread-indicator" style="display: none;">Unread Messages!</span>
+    <br><br>
 
     <!-- Message input and send button -->
     <label for="messageContent">Message:</label>
@@ -32,6 +41,8 @@
     <script>
         const socket = io('http://localhost:3000'); // Change to your server's address
 
+        let unreadMessages = 0;
+
         // Join room and fetch messages
         document.getElementById('joinRoomBtn').addEventListener('click', () => {
             const userId1 = document.getElementById('userId1').value;
@@ -39,6 +50,10 @@
 
             // Emit joinRoom event
             socket.emit('joinRoom', userId1, userId2);
+
+            // Reset unread messages count and hide indicator
+            unreadMessages = 0;
+            document.getElementById('unreadIndicator').style.display = 'none';
         });
 
         // Send message
@@ -47,7 +62,7 @@
             const userId2 = document.getElementById('userId2').value;
             const messageContent = document.getElementById('messageContent').value;
 
-            // Emit joinRoomAndSendMessage event with userId2 as receiver
+            // Emit joinRoomAndSendMessage event
             socket.emit('joinRoomAndSendMessage', userId1, userId2, messageContent);
         });
 
@@ -55,6 +70,7 @@
         socket.on('previousMessages', (messages) => {
             const chatMessages = document.getElementById('chatMessages');
             chatMessages.innerHTML = ''; // Clear previous messages
+
             messages.forEach((message) => {
                 const messageElement = document.createElement('div');
                 messageElement.textContent = `${message.timestamp}: ${message.content}`;
@@ -74,8 +90,13 @@
             const messageElement = document.createElement('div');
             messageElement.textContent = `${message.timestamp}: ${message.content}`;
             chatMessages.appendChild(messageElement);
-        });
 
+            // If the user has not joined the room, show unread indicator
+            if (document.getElementById('unreadIndicator').style.display === 'none') {
+                unreadMessages++;
+                document.getElementById('unreadIndicator').style.display = 'inline';
+            }
+        });
     </script>
 </body>
 </html>

@@ -64,7 +64,7 @@ exports.sendMessage = async (socket, userId1, userId2, messageContent) => {
     const roomId = generateRoomId(userId1, userId2);
     socket.join(roomId);
 
-    const message = new Message({ roomId, sender: userId1, reciever: userId2, content: messageContent });
+    const message = new Message({ roomId, sender: userId1, reciever: userId2, content: messageContent, read: false  });
     console.log(message);
     try {
         await message.save();
@@ -86,6 +86,13 @@ exports.sendMessage = async (socket, userId1, userId2, messageContent) => {
 exports.joinRoomAndFetchMessages = async (socket, userId1, userId2) => {
     const roomId = generateRoomId(userId1, userId2);
     socket.join(roomId);
+
+     // Update unread messages to mark them as read
+     await Message.updateMany(
+        { roomId: roomId, receiver: userId2, read: false },
+        { $set: { read: true } }
+    );
+
 
     const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
 
