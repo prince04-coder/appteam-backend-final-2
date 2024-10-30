@@ -62,19 +62,56 @@ const Message = require('../../models/Message');
 // Send message and join room
 exports.sendMessage = async (socket, userId1, userId2, messageContent) => {
     const roomId = generateRoomId(userId1, userId2);
-   socket.join(roomId);
+    socket.join(roomId);
 
-    const message = new Message({ roomId, sender: userId1,reciever:userId2, content: messageContent });
+    const message = new Message({ roomId, sender: userId1, receiver: userId2, content: messageContent });
     console.log(message);
     try {
         await message.save();
-        // Emit the message to the room (decrypted when fetched)
-        socket.to(roomId).emit('privateMessage', message);
-        socket.emit('privateMessage', message); // Send message back to the sender as well
+
+        // Convert timestamp to IST before emitting
+        const messageWithIST = {
+            ...message.toObject(),
+            timestamp: moment(message.timestamp).tz("Asia/Kolkata").format('YYYY-MM-DD HH:mm:ss')
+        };
+
+        // Emit the message to the room with IST timestamp
+        socket.to(roomId).emit('privateMessage', messageWithIST);
+        socket.emit('privateMessage', messageWithIST); // Send message back to the sender as well
     } catch (error) {
         console.error('Error saving message:', error);
     }
 };
+// Handle user joining room and automatically sending last 24-hour messages
+exports.joinRoomAndFetchMessages = async (socket, userId1, userId2) => {
+    const roomId = generateRoomId(userId1, userId2);
+    socket.join(roomId);
+
+    const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+
+    try {
+        const messages = await Message.find({
+            roomId: roomId,
+            timestamp: { $gte: twentyFourHoursAgo }
+        }).sort({ timestamp: 1 });
+
+        if (!messages || messages.length === 0) {
+            return socket.emit('noMessages', { error: 'No messages found' });
+        }
+
+        // Convert each message's timestamp to IST
+        const messagesWithIST = messages.map(message => ({
+            ...message.toObject(),
+            timestamp: moment(message.timestamp).tz("Asia/Kolkata").format('YYYY-MM-DD HH:mm:ss') // Adjust format as desired
+        }));
+
+        // Emit previous messages to the user with IST timestamps
+        socket.emit('previousMessages', messagesWithIST);
+    } catch (error) {
+        console.error('Error fetching messages:', error);
+    }
+};
+
 
 // Handle user joining room and automatically sending last 24-hour messages
 exports.fetchMessages = async (req, res) => {
@@ -111,31 +148,6 @@ try {
     })));
 }
      catch (error) {
-        console.error('Error fetching messages:', error);
-    }
-};
-
-// Handle user joining room and automatically sending last 24-hour messages
-exports.joinRoomAndFetchMessages = async (socket, userId1, userId2) => {
-    const roomId = generateRoomId(userId1, userId2);
-    
-    socket.join(roomId);
-
-    const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
-
-    try {
-        const messages = await Message.find({
-            roomId: roomId,
-            timestamp: { $gte: twentyFourHoursAgo }
-        }).sort({ timestamp: 1 });
-
-        if (!messages || messages.length === 0) {
-            return socket.emit('noMessages', { error: 'No messages found' });
-        }
-
-        // Emit previous messages to the user
-        socket.emit('previousMessages', messages);
-    } catch (error) {
         console.error('Error fetching messages:', error);
     }
 };
