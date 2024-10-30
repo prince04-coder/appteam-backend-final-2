@@ -73,7 +73,7 @@
 // module.exports = Message;
 
 
-
+const moment = require('moment-timezone');
 
 const mongoose = require('mongoose');
 const crypto = require('crypto');
@@ -108,7 +108,10 @@ const messageSchema = new Schema({
   sender: { type: String, required: true },
   content: { type: String, required: true },
   reciever:{type:String, required: true},
-  timestamp: { type: Date, default: Date.now }
+  timestamp: {
+    type: Date,
+    default: () => moment().tz("Asia/Kolkata").toDate()
+  }
 });
 
 // Middleware to encrypt message before saving
