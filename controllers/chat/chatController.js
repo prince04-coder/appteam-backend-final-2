@@ -54,7 +54,7 @@
 
 
 
-
+const moment = require('moment-timezone');
 
 
 const Message = require('../../models/Message');
@@ -64,7 +64,7 @@ exports.sendMessage = async (socket, userId1, userId2, messageContent) => {
     const roomId = generateRoomId(userId1, userId2);
     socket.join(roomId);
 
-    const message = new Message({ roomId, sender: userId1, receiver: userId2, content: messageContent });
+    const message = new Message({ roomId, sender: userId1, reciever: userId2, content: messageContent });
     console.log(message);
     try {
         await message.save();
