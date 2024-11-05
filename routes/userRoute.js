@@ -52,6 +52,8 @@ router.get('/getByUID/:uid', userController.getUserByUID);
 // Update quiz answers route
 router.put('/updateQuizAnswers/:userId', userController.updateQuizAnswers);
 
+router.get('/getById/:id', userController.getUserById);
+
 module.exports = router;
 
 

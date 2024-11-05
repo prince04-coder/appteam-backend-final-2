@@ -8,6 +8,10 @@ const MemberSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  image:{
+    type: String
+  
+  },
    
   position: {
     type: Number,

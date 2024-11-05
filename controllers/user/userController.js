@@ -157,6 +157,33 @@ exports.getUserByUID = async (req, res) => {
   }
 };
 
+// Fetch user by MongoDB ObjectId
+exports.getUserById = async (req, res) => {
+  const userId = req.params.id;
+
+  try {
+    // Fetch the user from MongoDB by ObjectId
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Send the MongoDB ObjectId and other user data
+    res.json({
+      mongoDbUserId: user._id,
+      firebaseUID: user.firebaseUID,
+      username: user.username,
+      email: user.email,
+      dob: user.dob,
+      gender: user.gender
+    });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ message: 'Server Error' });
+  }
+};
+
 
 
 // Update quiz answers

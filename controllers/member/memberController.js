@@ -3,13 +3,13 @@ const Member = require('../../models/Member');
 
 //Registration of member
 exports.registerMember = async(req, res)=>{
-    const {name, clubName, position} = req.body;
+    const {name, clubName, position, image} = req.body;
  try{
 
     const newMember = new Member({
         name,
         clubName,
-        position
+        position, image
       });
   
       //save
