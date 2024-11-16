@@ -1,4 +1,3 @@
-
 const User = require('../../models/User');
 const BATCH_SIZE = 2000;  // Number of users to process per batch
 const PARALLEL_BATCHES = 5;  // Number of parallel batches to run
@@ -52,12 +51,20 @@ async function processBatch(skip, limit, femaleUsers) {
             $sort: { score: -1 }
           },
           {
-            $limit: 2 // Ensure at least 2 matches
+            $sample: { size: 5 }  // Randomly pick a small number of females to avoid bias
+          },
+          {
+            $limit: MAX_MATCHES  // Limit to the maximum number of matches
           }
         ]);
 
-        // Update the user with the found matches
+        // Update the male user with the found matches
         await User.findByIdAndUpdate(user._id, { $set: { matches: matches.map(m => m._id) } });
+
+        // Update the female users with the male user in their matches
+        for (let match of matches) {
+          await User.findByIdAndUpdate(match._id, { $push: { matches: user._id } });
+        }
       } else {
         // If not enough females, match with available females (even if it's less than 2)
         const matches = await User.aggregate([
@@ -88,15 +95,23 @@ async function processBatch(skip, limit, femaleUsers) {
             $sort: { score: -1 }
           },
           {
-            $limit: MAX_MATCHES
+            $sample: { size: 5 }  // Randomly pick a small number of females to avoid bias
+          },
+          {
+            $limit: MAX_MATCHES  // Limit to the maximum number of matches
           }
         ]);
 
-        // Update the user with the found matches
+        // Update the male user with the found matches
         await User.findByIdAndUpdate(user._id, { $set: { matches: matches.map(m => m._id) } });
+
+        // Update the female users with the male user in their matches
+        for (let match of matches) {
+          await User.findByIdAndUpdate(match._id, { $push: { matches: user._id } });
+        }
       }
     } else {
-      // Similar logic for female users can be applied if needed
+      // If user is female, find top matches with males
       const matches = await User.aggregate([
         {
           $match: {
@@ -122,15 +137,23 @@ async function processBatch(skip, limit, femaleUsers) {
           }
         },
         {
-          $sort: { score: -1 }
+          $sort: { score: -1 }  // Sort by highest score first
         },
         {
-          $limit: MAX_MATCHES
+          $sample: { size: 5 }  // Randomly pick a small number of males to avoid bias
+        },
+        {
+          $limit: MAX_MATCHES  // Limit to the maximum number of matches
         }
       ]);
 
-      // Update the user with the found matches
+      // Update the female user with the found matches
       await User.findByIdAndUpdate(user._id, { $set: { matches: matches.map(m => m._id) } });
+
+      // Update the male users with the female user in their matches
+      for (let match of matches) {
+        await User.findByIdAndUpdate(match._id, { $push: { matches: user._id } });
+      }
     }
   }
 
@@ -170,3 +193,4 @@ module.exports = {
   startMatchmaking,
   processBatch
 };
+

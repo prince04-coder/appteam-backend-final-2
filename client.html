@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -73,7 +75,7 @@
 
             messages.forEach((message) => {
                 const messageElement = document.createElement('div');
-                messageElement.textContent = `${message.timestamp}: ${message.content}`;
+                messageElement.textContent = `Sender ID: ${message.senderId}, Receiver ID: ${message.receiverId} - ${message.timestamp}: ${message.content}`;
                 chatMessages.appendChild(messageElement);
             });
         });
@@ -88,7 +90,7 @@
         socket.on('privateMessage', (message) => {
             const chatMessages = document.getElementById('chatMessages');
             const messageElement = document.createElement('div');
-            messageElement.textContent = `${message.timestamp}: ${message.content}`;
+            messageElement.textContent = `Sender ID: ${message.senderId}, Receiver ID: ${message.receiverId} - ${message.timestamp}: ${message.content}`;
             chatMessages.appendChild(messageElement);
 
             // If the user has not joined the room, show unread indicator

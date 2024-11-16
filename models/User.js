@@ -114,3 +114,4 @@ UserSchema.index({ quizAnswers: 1 });
 // Defining model
 const User = mongoose.model('User', UserSchema);
 module.exports = User;
+

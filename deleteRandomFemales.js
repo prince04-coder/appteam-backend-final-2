@@ -7,7 +7,7 @@ const mongoURI = process.env.MONGO_URI; // Replace with your MongoDB connection 
 mongoose.connect(mongoURI, { useUnifiedTopology: true })
   .then(() => {
     console.log('MongoDB connected successfully.');
-    deleteRandomFemaleUsers(500); // Delete 54 random female users
+    deleteRandomFemaleUsers(300); // Delete 54 random female users
   })
   .catch((err) => console.error('MongoDB connection error:', err));
 
